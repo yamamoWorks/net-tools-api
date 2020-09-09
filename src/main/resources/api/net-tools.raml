@@ -13,6 +13,11 @@ securitySchemes:
       host:
         description: The domain or ip of the host to ping
         type: string
+      size:
+        description: The number of data bytes to be sent
+        type: integer 
+        default: 64
+        required: false
     responses: 
       200:
         body: 

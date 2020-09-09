@@ -76,6 +76,9 @@
             #ip {
                 width: 150px;
             }
+            #size {
+                width: 50px;
+            }
             #port {
                 width: 50px;
             }
@@ -148,6 +151,7 @@
                 </select>
                 <input name="ip" placeholder="IP Address or Host" type="text" title="IP" id="ip" />
                 <input name="port" placeholder="Port" type="text" title="PORT" id="port" />
+                <input name="size" placeholder="size" type="text" title="SIZE" id="size" value="64" />
                 <input name="url" placeholder="http://host:port/path/" type="text" title="URL" id="url" />
                 <input name="dnsServer" placeholder="dns server" type="text" title="DNS SERVER" id="dnsServer" />
                 <button type="button" id="check">Run</button>
@@ -193,6 +197,7 @@
                     switch (operation) {
                       case "ping":
                         $("#ip").show();
+                        $("#size").show();
                         $("#pingHelp").show();
                         break;
                       case "traceroute":
@@ -235,6 +240,7 @@
                 $("#check").click(function() {
                     var operation = $("#operation").val();
                     var ip = $("#ip").val();
+                    var size = $("#size").val();
                     var url = (operation === 'curl') ? $("#url").val() : '';
                     var port = (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') ? $("#port").val() : '';
                     var dnsServer = (operation === 'dns') ? $("#dnsServer").val() : '';                    
@@ -262,6 +268,9 @@
                     }
                     if (operation === 'curl') {
                         apiurl += '&url=' + encodeURI(url);
+                    }
+                    if (operation === 'ping' && size) {
+                        apiurl += '&size=' + size;
                     }
                     console.log(operation + " " + ip + " " + port + " " + url );
                     $("#check").attr("disabled", true);

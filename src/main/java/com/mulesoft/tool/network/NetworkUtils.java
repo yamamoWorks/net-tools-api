@@ -15,8 +15,8 @@ import java.io.BufferedWriter;
 
 public class NetworkUtils {
 
-	public static String ping(String host) throws Exception {
-		return execute(new ProcessBuilder("ping", "-c", "4", host));
+	public static String ping(String host, int size) throws Exception {
+		return execute(new ProcessBuilder("ping", "-c", "4", "-s", Integer.toString(size - 8), host));
 	}
 
 	public static String resolveIPs(String host, String dnsServer) throws UnknownHostException {

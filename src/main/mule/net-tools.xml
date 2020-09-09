@@ -186,8 +186,9 @@ NetworkUtils::resolveIPs(attributes.queryParams.host, attributes.queryParams.dns
 				<ee:set-payload ><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
+var size = if(isBlank(attributes.queryParams.size)) 64 else attributes.queryParams.size
 ---
-NetworkUtils::ping(attributes.queryParams.host)]]></ee:set-payload>
+NetworkUtils::ping(attributes.queryParams.host, size)]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
     </flow>
