@@ -4,14 +4,15 @@ http://www.mulesoft.org/schema/mule/spring http://www.mulesoft.org/schema/mule/s
 http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <http:listener-config name="net-tools-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="8081" />
+        <http:listener-connection host="0.0.0.0" port="${port}" />
     </http:listener-config>
     <apikit:config name="net-tools-config" raml="net-tools.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
     	<spring:config name="Spring_Config" doc:id="3b613b3b-3bc8-47ee-897c-e00fe681b775" files="beans.xml" />
 	<spring:security-manager>
 		<spring:delegate-security-provider name="memory-provider" delegate-ref="authenticationManager" />
 	</spring:security-manager>
-    <flow name="ui" doc:id="94b97777-bd63-4abb-8093-a5c8ac97aa17" >
+    <global-property doc:name="Global Property" doc:id="06badc0d-2bb4-4c67-9113-aece872c8dad" name="port" value="8081" />
+	<flow name="ui" doc:id="94b97777-bd63-4abb-8093-a5c8ac97aa17" >
 		<http:listener doc:name="Listener" doc:id="7e20b485-577c-4530-b2b1-66b6a84d5694" config-ref="net-tools-httpListenerConfig" path="/*" outputMimeType="text/html"/>
 		<http:basic-security-filter doc:name="Basic security filter" doc:id="cb77f47e-923a-4195-86fc-23bbf2f01311" realm="mule" />
 		<ee:transform doc:name="Transform Message" doc:id="f2311504-43c7-4db0-9b0a-a5a4fdd80d90" >
