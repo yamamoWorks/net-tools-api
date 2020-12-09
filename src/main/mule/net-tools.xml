@@ -38,6 +38,10 @@ attributes.requestPath]]></ee:set-variable>
 		<http:listener doc:name="Listener" doc:id="24f59827-51c3-48d1-abce-18d4143f58f3" config-ref="net-tools-httpListenerConfig" path="/css/*" outputMimeType="text/css"/>
 		<flow-ref doc:name="Flow Reference" doc:id="4a35a0d4-31a1-4514-a348-a4eb4d089559" name="ui"/>
 	</flow>
+	<flow name="ui-js" doc:id="a0017957-213a-4895-8403-751f630cb0aa">
+		<http:listener doc:name="Listener" doc:id="0e4ff6e0-3091-4e2e-a852-b5232c8afb5a" config-ref="net-tools-httpListenerConfig" path="/js/*" outputMimeType="text/javascript" />
+		<flow-ref doc:name="Flow Reference" doc:id="90ab1530-3d9e-4d7f-9266-1dbca8085e47" name="ui" />
+	</flow>
 	<flow name="net-tools-main">
         <http:listener config-ref="net-tools-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -181,7 +185,7 @@ NetworkUtils::resolveIPs(attributes.queryParams.host, attributes.queryParams.dns
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:\ping:net-tools-config">
+	<flow name="get:\ping:net-tools-config">
 		<ee:transform doc:name="Transform Message" doc:id="4042b6d3-cc6a-4fae-ae4c-ea39b6650dbe" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
@@ -204,7 +208,7 @@ NetworkUtils::testConnect(attributes.queryParams.host, attributes.queryParams.po
             </ee:message>
         </ee:transform>
     </flow>
-    <flow name="get:\certest:net-tools-config" doc:id="8e725dad-59c4-4713-9771-91a850e9ce9d" >
+	<flow name="get:\certest:net-tools-config" doc:id="8e725dad-59c4-4713-9771-91a850e9ce9d" >
 		<ee:transform doc:name="Transform Message" doc:id="70af9c23-b034-40fc-ab42-7781c55b85e3" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0

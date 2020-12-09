@@ -4,7 +4,7 @@
 
     <groupId>com.mycompany</groupId>
     <artifactId>net-tools-api</artifactId>
-    <version>2.2.1</version>
+    <version>2.2.3</version>
     <packaging>mule-application</packaging>
 
     <name>net-tools-api</name>
@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <app.runtime>4.3.0</app.runtime>
+        <app.runtime>4.3.0-20201013</app.runtime>
         <mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
     </properties>
 
