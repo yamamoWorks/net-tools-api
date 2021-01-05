@@ -136,6 +136,11 @@
         <link href="css/toastr.min.css" rel="stylesheet" />
 	</head>
 	<body>
+		<script type="text/javascript">
+			if(!document.location.pathname.endsWith('/')){
+				document.location.href = document.location.pathname + '/'
+			}
+		</script>
 		<div class="content">
 			<div class="header"><h1>Network connectivity tools</h1></div>
 			<form id="theForm" action="#">
