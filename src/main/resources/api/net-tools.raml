@@ -130,3 +130,27 @@ securitySchemes:
         body: 
           text/plain:
             example: CONNECTED(00000005)
+
+/ifconfig:
+  get:
+    description: Runs a ifconfig
+    responses:
+      200:
+        body:
+          text/plain:
+            example: |
+              eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+              inet 192.168.1.1  netmask 255.255.255.0  broadcast 192.168.1.255
+              ether 00:15:5d:0b:08:1b  txqueuelen 1000  (Ethernet)
+              RX packets 2885  bytes 2989181 (2.9 MB)
+              RX errors 0  dropped 0  overruns 0  frame 0
+              TX packets 922  bytes 117333 (117.3 KB)
+              TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+              lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+              inet 127.0.0.1  netmask 255.0.0.0
+              loop  txqueuelen 1000  (Local Loopback)
+              RX packets 454  bytes 34922 (34.9 KB)
+              RX errors 0  dropped 0  overruns 0  frame 0
+              TX packets 454  bytes 34922 (34.9 KB)
+              TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0

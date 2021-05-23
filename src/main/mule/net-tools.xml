@@ -243,4 +243,15 @@ NetworkUtils::traceRoute(attributes.queryParams.host)]]></ee:set-payload>
             </ee:message>
         </ee:transform>
     </flow>
+	<flow name="get:\ifconfig:net-tools-config" doc:id="30ef0150-565a-49fd-a179-917c694c9ffe" >
+		<ee:transform doc:name="Transform Message" doc:id="0335d035-5873-4c55-b7f5-51d27330bcc4" xsi:schemaLocation="&#10;http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd &#10;http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::ifconfig()]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
 </mule>

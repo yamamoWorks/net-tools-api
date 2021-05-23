@@ -153,6 +153,7 @@
                     <option value="curl">curl</option>
                     <option value="certest">certificates</option>
                     <option value="ciphertest">ssl ciphers</option>
+                    <option value="ifconfig">ifconfig</option>
                 </select>
                 <input name="ip" placeholder="IP Address or Host" type="text" title="IP" id="ip" />
                 <input name="port" placeholder="Port" type="text" title="PORT" id="port" />
@@ -249,7 +250,7 @@
                     var url = (operation === 'curl') ? $("#url").val() : '';
                     var port = (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') ? $("#port").val() : '';
                     var dnsServer = (operation === 'dns') ? $("#dnsServer").val() : '';                    
-                    if (operation !== 'curl' && !ip) {
+                    if (operation !== 'curl' && operation !== 'ifconfig' && !ip) {
                         toastr["error"]("Missing IP", "Invalid Arguments")
                         console.error("Missing IP!");
                         return;

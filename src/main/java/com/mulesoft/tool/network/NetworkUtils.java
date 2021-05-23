@@ -106,6 +106,10 @@ public class NetworkUtils {
 		return remoteEndpointSupportedCiphers;
 	}
 
+	public static String ifconfig() throws Exception {
+		return execute(new ProcessBuilder("ifconfig"));
+	}
+
 	private static String execute(ProcessBuilder pb) throws IOException {
 		Process p = pb.start();
 		OutputStream stdin = p.getOutputStream();
