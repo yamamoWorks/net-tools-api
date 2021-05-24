@@ -32,6 +32,13 @@ public class NetworkUtils {
 			}
 			return sb.toString();
 		}	
+		else if(dnsServer.isEmpty()) {
+			try {
+				return execute(new ProcessBuilder("dig", "+short", host));
+			} catch (IOException e) {
+				return e.getMessage();
+			} 
+		}
 		else {
  			dnsServer = "@" + dnsServer;
 			try {
