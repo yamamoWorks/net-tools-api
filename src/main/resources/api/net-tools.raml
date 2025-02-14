@@ -103,6 +103,22 @@ securitySchemes:
           text/plain:
             example: |
               curl: (7) Failed to connect to 10.200.27.15 port 443: Timed out             
+  post:
+    description: Runs a curl(POST) from the Mule host to the specified resource 
+    queryParameters:
+      url:
+        description: Target URL
+        type: string 
+      header:
+        required: false
+        items:
+          type: string
+          example: |
+            Authorization:Basic YQxhZGRpbjpvcGVuc2VzYW1l
+    body:
+      text/plain:
+        description: Payload
+        type: string 
 
 /ciphertest:
   get:

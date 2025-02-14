@@ -149,9 +149,16 @@
                 </select>
                 <input name="ip" placeholder="IP Address or Host" type="text" title="IP" id="ip" />
                 <input name="port" placeholder="Port" type="text" title="PORT" id="port" />
+                <select name="method" id="method">
+                	<option value="GET" selected>GET</option>
+                	<option value="POST">POST</option>
+                </select>
                 <input name="url" placeholder="http://host:port/path/" type="text" title="URL" id="url" />
                 <input name="insecure" type="checkbox" title="insecure" id="insecure" checked="true" /><span class="helpBox" id="insecure_label">insecure</span>
+                <div id="headers_label">headers</div>
                 <textarea name="headers" placeholder="header-name:header-value" title="Headers" id="headers" rows="3" cols="50" style="display: block"></textarea>
+                <div id="body_label">body</div>
+                <textarea name="body" placeholder='{ "id"=1, "name"="john" }' title="Body" id="body" rows="5" cols="50" style="display: block"></textarea>
                 <input name="dnsServer" placeholder="dns server" type="text" title="DNS SERVER" id="dnsServer" />
                 <button type="button" id="check">Run</button>
                 <button type="button" id="clean">Clean Console</button>
@@ -195,6 +202,12 @@
                     textareas.hide();
                     var helps = $(".helpBox");
                     helps.hide();
+                    var method = $("#method").removeClass();
+                    method.hide();
+                    var headers_label = $("#headers_label").removeClass();
+                    headers_label.hide();
+                    var body_label = $("#body_label").removeClass();
+                    body_label.hide();
                     switch (operation) {
                       case "ping":
                         $("#ip").show();
@@ -225,9 +238,13 @@
                         $("#dnsHelp").show();
                         break;
                       case "curl":
+                        $("#method").show();
                         $("#url").show();
                         $("#curlHelp").show();
                         $("#headers").show();
+                        $("#headers_label").show();
+                        $("#body").show();
+                        $("#body_label").show();
                         $("#insecure").show();
                         $("#insecure_label").show();
                         break;
@@ -243,6 +260,8 @@
                 $("#check").click(function() {
                     var operation = $("#operation").val();
                     var ip = $("#ip").val();
+					var method = "GET";
+					var body = null;
                     var url = (operation === 'curl') ? $("#url").val() : '';
                     var port = (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') ? $("#port").val() : '';
                     var dnsServer = (operation === 'dns') ? $("#dnsServer").val() : '';                    
@@ -274,12 +293,19 @@
                         for (let h of $("#headers").val().split('\n')) {
                         	apiurl += '&header=' + encodeURI(h);
                         }
+                        method = $("#method").val();
+                        if(method === 'POST') {
+                        	body = $("#body").val();
+                        }
                     }
                     console.log(operation + " " + ip + " " + port + " " + url );
                     $("#check").attr("disabled", true);
                     $("#output").append('<pre class="command">&gt; ' + operation + ' ' + ip + ' ' + port + ' ' + url + '</pre>');
                     $.ajax({
-                        url: apiurl
+                        url: apiurl,
+                        type: method,
+                        contentType: "text/plain",
+                        data: body
                     })
                     .done(function(result) {
                         if (operation === 'curl') {
