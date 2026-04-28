@@ -4,7 +4,7 @@
 
 	<groupId>com.mycompany</groupId>
 	<artifactId>net-tools-api</artifactId>
-	<version>2.5.1</version>
+	<version>2.6.0</version>
 	<packaging>mule-application</packaging>
 
 	<name>net-tools-api</name>
@@ -13,12 +13,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<app.runtime>4.4.0</app.runtime>
-		<mule.maven.plugin.version>3.8.0</mule.maven.plugin.version>
-		<apikit.module.version>1.8.0</apikit.module.version>
-		<http.connector.version>1.7.3</http.connector.version>
-		<sockets.connector.version>1.2.3</sockets.connector.version>
-		<spring.module.version>1.3.7</spring.module.version>
+		<app.runtime>4.9.3</app.runtime>
+		<mule.maven.plugin.version>4.5.0</mule.maven.plugin.version>
+		<apikit.module.version>1.11.5</apikit.module.version>
+		<http.connector.version>1.10.3</http.connector.version>
+		<sockets.connector.version>1.2.5</sockets.connector.version>
+		<spring.module.version>1.5.0</spring.module.version>
 
 		<spring.version>5.3.27</spring.version>
 		<spring-security.version>5.7.8</spring-security.version>

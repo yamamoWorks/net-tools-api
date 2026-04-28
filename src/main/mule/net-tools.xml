@@ -162,6 +162,17 @@ NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header de
 			</ee:message>
 		</ee:transform>
     </flow>
+    <flow name="post:\curl:text\plain:net-tools-config">
+		<ee:transform doc:name="Transform Message" doc:id="66977d21-487a-4048-a615-ba8ca9208f33" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean, payload)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+    </flow>
     <flow name="get:\dns:net-tools-config">
         <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="2eb37294-21d7-412a-8ab6-8da73008b111">
             <ee:message>
