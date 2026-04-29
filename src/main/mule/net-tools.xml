@@ -146,6 +146,7 @@ output application/json
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
+var req = payload
 ---
 NetworkUtils::ping(attributes.queryParams.host)]]></ee:set-payload>
 					</ee:message>
