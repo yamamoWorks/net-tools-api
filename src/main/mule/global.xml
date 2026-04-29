@@ -28,7 +28,16 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 		</http:listener-connection>
     </http:listener-config>
     
-    <apikit:config name="net-tools-config" raml="net-tools.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <apikit:config name="net-tools-config" raml="net-tools.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus">
+        <apikit:flow-mapping resource="/ping" action="get" flow-ref="api-dispatch" />
+        <apikit:flow-mapping resource="/dns" action="get" flow-ref="api-dispatch" />
+        <apikit:flow-mapping resource="/curl" action="get" flow-ref="api-dispatch" />
+        <apikit:flow-mapping resource="/curl" action="post" flow-ref="api-dispatch" content-type="text/plain" />
+        <apikit:flow-mapping resource="/socket" action="get" flow-ref="api-dispatch" />
+        <apikit:flow-mapping resource="/certest" action="get" flow-ref="api-dispatch" />
+        <apikit:flow-mapping resource="/ciphertest" action="get" flow-ref="api-dispatch" />
+        <apikit:flow-mapping resource="/traceroute" action="get" flow-ref="api-dispatch" />
+    </apikit:config>
     
     <spring:config name="Spring_Config" doc:id="45181472-36fd-44e6-b710-296481c3c450" files="beans.xml" />
 	<spring:security-manager> 
