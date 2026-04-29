@@ -137,94 +137,97 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-	<flow name="get:\curl:net-tools-config">
-		<ee:transform doc:name="Transform Message" doc:id="c96eaddb-f56e-4f1a-81ff-ec15df7cb6d6" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
-import java!com::mulesoft::tool::network::NetworkUtils
----
-NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean)]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-    </flow>
-    <flow name="post:\curl:text\plain:net-tools-config">
-		<ee:transform doc:name="Transform Message" doc:id="66977d21-487a-4048-a615-ba8ca9208f33" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
-import java!com::mulesoft::tool::network::NetworkUtils
----
-NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean, payload)]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-    </flow>
-    <flow name="get:\dns:net-tools-config">
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="2eb37294-21d7-412a-8ab6-8da73008b111">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/java
-import java!com::mulesoft::tool::network::NetworkUtils
----
-NetworkUtils::resolveIPs(attributes.queryParams.host, attributes.queryParams.dnsServer default "")]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="get:\ping:net-tools-config">
-		<ee:transform doc:name="Transform Message" doc:id="4042b6d3-cc6a-4fae-ae4c-ea39b6650dbe" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+
+	<flow name="api-dispatch">
+		<choice>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/ping"]'>
+				<ee:transform doc:name="Ping">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
 NetworkUtils::ping(attributes.queryParams.host)]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-    </flow>
-    <flow name="get:\socket:net-tools-config">
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="38147a29-0fe5-47f2-ba74-135f9392ecd3">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/dns"]'>
+				<ee:transform doc:name="DNS">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::testConnect(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
-    <flow name="get:\certest:net-tools-config" doc:id="8e725dad-59c4-4713-9771-91a850e9ce9d" >
-		<ee:transform doc:name="Transform Message" doc:id="70af9c23-b034-40fc-ab42-7781c55b85e3" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+NetworkUtils::resolveIPs(attributes.queryParams.host, attributes.queryParams.dnsServer default "")]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/curl"]'>
+				<ee:transform doc:name="Curl GET">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::certest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-	</flow>
-	<flow name="get:\ciphertest:net-tools-config" doc:id="349ff8fc-6032-4d79-85c9-5d0c4a59e035" >
-		<ee:transform doc:name="Transform Message" doc:id="690960a8-0545-4d52-ab77-c170ff06a27d" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/api/curl"]'>
+				<ee:transform doc:name="Curl POST">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::cipherTest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-	</flow>
-	<flow name="get:\traceroute:net-tools-config">
-        <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
-http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd 
-http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:id="a006967e-8161-45f9-af3b-d1f3386ae267">
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
+NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean, payload)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/traceroute"]'>
+				<ee:transform doc:name="Traceroute">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
 NetworkUtils::traceRoute(attributes.queryParams.host)]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
-    </flow>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/certest"]'>
+				<ee:transform doc:name="Certest">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::certest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/ciphertest"]'>
+				<ee:transform doc:name="CipherTest">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::cipherTest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/socket"]'>
+				<ee:transform doc:name="Socket">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::testConnect(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+		</choice>
+	</flow>
 </mule>
