@@ -13,9 +13,6 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
 
 	<flow name="ui" doc:id="94b97777-bd63-4abb-8093-a5c8ac97aa17">
-		<http:listener doc:name="Listener"
-			doc:id="7e20b485-577c-4530-b2b1-66b6a84d5694" config-ref="https"
-			path="/*" outputMimeType="text/html" />
 		<http:basic-security-filter
 			doc:name="Basic security filter"
 			doc:id="cb77f47e-923a-4195-86fc-23bbf2f01311" realm="mule" />
@@ -54,17 +51,6 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	</flow>
 	<flow name="net-tools-main"
 		doc:id="6f86a93f-9de9-4cf8-b092-b6a4b23c42f4">
-		<http:listener config-ref="https" path="/api/*">
-			<http:response
-				statusCode="#[vars.httpStatus default 200]">
-				<http:headers>#[vars.outboundHeaders default {}]</http:headers>
-			</http:response>
-			<http:error-response
-				statusCode="#[vars.httpStatus default 500]">
-				<http:body>#[payload]</http:body>
-				<http:headers>#[vars.outboundHeaders default {}]</http:headers>
-			</http:error-response>
-		</http:listener>
 		<http:basic-security-filter doc:name="Basic security filter" realm="mule" />
 		<logger level="INFO"
 			message='#["$(attributes.scheme default "") $(attributes.method default "") $(attributes.requestUri default "")"]'
@@ -151,29 +137,98 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-	<flow name="post:\tools:application\json:net-tools-config">
-		<ee:transform doc:name="Transform Message" doc:id="single-dispatch-tools" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+
+	<flow name="api-dispatch">
+		<choice>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/ping"]'>
+				<ee:transform doc:name="Ping">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 var req = payload
 ---
-(req.operation default "") match {
-  case "ping" -> NetworkUtils::ping(req.host)
-  case "dns" -> NetworkUtils::resolveIPs(req.host, req.dnsServer default "")
-  case "curl" ->
-    if ((req.payload default null) != null)
-      NetworkUtils::curl(req.url, req.header default [], req.insecure default false, req.payload)
-    else
-      NetworkUtils::curl(req.url, req.header default [], req.insecure default false)
-  case "socket" -> NetworkUtils::testConnect(req.host, req.port)
-  case "traceroute" -> NetworkUtils::traceRoute(req.host)
-  case "certest" -> NetworkUtils::certest(req.host, req.port)
-  case "ciphertest" -> NetworkUtils::cipherTest(req.host, req.port)
-  else -> "Unsupported operation: " ++ (req.operation default "")
-}]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
-    </flow>
+NetworkUtils::ping(attributes.queryParams.host)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/dns"]'>
+				<ee:transform doc:name="DNS">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::resolveIPs(attributes.queryParams.host, attributes.queryParams.dnsServer default "")]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/curl"]'>
+				<ee:transform doc:name="Curl GET">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/api/curl"]'>
+				<ee:transform doc:name="Curl POST">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean, payload)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/traceroute"]'>
+				<ee:transform doc:name="Traceroute">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::traceRoute(attributes.queryParams.host)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/certest"]'>
+				<ee:transform doc:name="Certest">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::certest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/ciphertest"]'>
+				<ee:transform doc:name="CipherTest">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::cipherTest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/socket"]'>
+				<ee:transform doc:name="Socket">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/java
+import java!com::mulesoft::tool::network::NetworkUtils
+---
+NetworkUtils::testConnect(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</when>
+		</choice>
+	</flow>
 </mule>
