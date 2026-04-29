@@ -283,8 +283,7 @@
                 $("#check").click(function() {
                     var operation = $("#operation").val();
                     var ip = $("#ip").val();
-					var method = "GET";
-					var body = null;
+                    var body = null;
                     var url = (operation === 'curl') ? $("#url").val() : '';
                     var port = (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') ? $("#port").val() : '';
                     var dnsServer = (operation === 'dns') ? $("#dnsServer").val() : '';                    
@@ -303,22 +302,23 @@
                         console.error('Missing url!');
                         return;
                     }
-                    var apiurl = 'api/' + operation + '?host=' + ip;
-                    if (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') {
-                        apiurl += '&port=' + port;
+                    var apiurl = 'tools';
+                    var requestBody = { operation: operation };
+                    if (operation !== 'curl') {
+                        requestBody.host = ip;
                     }
-                    if (operation === 'dns') {
-                        apiurl += '&dnsServer=' + dnsServer;
+                    if (operation === 'socket' || operation === 'certest' || operation === 'ciphertest') {
+                        requestBody.port = Number(port);
+                    }
+                    if (operation === 'dns' && dnsServer) {
+                        requestBody.dnsServer = dnsServer;
                     }
                     if (operation === 'curl') {
-                        apiurl += '&url=' + encodeURI(url);
-                        apiurl += '&insecure=' + $("#insecure").prop('checked');
-                        for (let h of $("#headers").val().split('\n')) {
-                        	apiurl += '&header=' + encodeURI(h);
-                        }
-                        method = $("#method").val();
-                        if(method === 'POST') {
-                        	body = $("#body").val();
+                        requestBody.url = url;
+                        requestBody.insecure = $("#insecure").prop('checked');
+                        requestBody.header = $("#headers").val().split('\n').filter(Boolean);
+                        if ($("#method").val() === 'POST') {
+                            requestBody.payload = $("#body").val();
                         }
                     }
                     console.log(operation + " " + ip + " " + port + " " + url );
@@ -326,9 +326,9 @@
                     $("#output").append('<pre class="command">&gt; ' + operation + ' ' + ip + ' ' + port + ' ' + url + '</pre>');
                     $.ajax({
                         url: apiurl,
-                        type: method,
-                        contentType: "text/plain",
-                        data: body
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(requestBody)
                     })
                     .done(function(result) {
                         if (operation === 'curl') {

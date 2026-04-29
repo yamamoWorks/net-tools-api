@@ -140,92 +140,80 @@ output application/json
 
 	<flow name="api-dispatch">
 		<choice>
-			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/ping"]'>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/tools" and payload.operation == "ping"]'>
 				<ee:transform doc:name="Ping">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
-var req = payload
 ---
-NetworkUtils::ping(attributes.queryParams.host)]]></ee:set-payload>
+NetworkUtils::ping(payload.host)]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</when>
-			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/dns"]'>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/tools" and payload.operation == "dns"]'>
 				<ee:transform doc:name="DNS">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::resolveIPs(attributes.queryParams.host, attributes.queryParams.dnsServer default "")]]></ee:set-payload>
+NetworkUtils::resolveIPs(payload.host, payload.dnsServer default "")]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</when>
-			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/curl"]'>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/tools" and payload.operation == "curl"]'>
 				<ee:transform doc:name="Curl GET">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean)]]></ee:set-payload>
+NetworkUtils::curl(payload.url, payload.header default [], payload.insecure default false, payload.payload default "")]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</when>
-			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/api/curl"]'>
-				<ee:transform doc:name="Curl POST">
-					<ee:message>
-						<ee:set-payload><![CDATA[%dw 2.0
-output application/java
-import java!com::mulesoft::tool::network::NetworkUtils
----
-NetworkUtils::curl(attributes.queryParams.url, attributes.queryParams.*header default [], attributes.queryParams.insecure as Boolean, payload)]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-			</when>
-			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/traceroute"]'>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/tools" and payload.operation == "traceroute"]'>
 				<ee:transform doc:name="Traceroute">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::traceRoute(attributes.queryParams.host)]]></ee:set-payload>
+NetworkUtils::traceRoute(payload.host)]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</when>
-			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/certest"]'>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/tools" and payload.operation == "certest"]'>
 				<ee:transform doc:name="Certest">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::certest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+NetworkUtils::certest(payload.host, payload.port)]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</when>
-			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/ciphertest"]'>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/tools" and payload.operation == "ciphertest"]'>
 				<ee:transform doc:name="CipherTest">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::cipherTest(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+NetworkUtils::cipherTest(payload.host, payload.port)]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</when>
-			<when expression='#[attributes.method == "GET" and attributes.requestPath == "/api/socket"]'>
+			<when expression='#[attributes.method == "POST" and attributes.requestPath == "/tools" and payload.operation == "socket"]'>
 				<ee:transform doc:name="Socket">
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/java
 import java!com::mulesoft::tool::network::NetworkUtils
 ---
-NetworkUtils::testConnect(attributes.queryParams.host, attributes.queryParams.port)]]></ee:set-payload>
+NetworkUtils::testConnect(payload.host, payload.port)]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 			</when>

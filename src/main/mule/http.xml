@@ -20,7 +20,7 @@
 			</http:error-response>
 		</http:listener>
 		<choice doc:name="Route request by path">
-			<when expression='#[attributes.requestPath startsWith "/api/"]'>
+			<when expression='#[attributes.requestPath startsWith "/api/" or attributes.requestPath == "/tools"]'>
 				<flow-ref doc:name="net-tools-main" doc:id="7b7d5435-a4ae-4c67-9159-cf238285bd32" name="net-tools-main" />
 			</when>
 			<otherwise>
